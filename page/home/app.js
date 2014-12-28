@@ -121,8 +121,12 @@ angular.module('lostwood')
                     if (lw.dead) {
                         return;
                     }
-                    lw.playing = true;
-                    angular.forEach(lw.events, lw.eventRun);
+                    if (lw.alert.shown) {
+                        lw.alert.close();
+                    } else {
+                        lw.playing = true;
+                        angular.forEach(lw.events, lw.eventRun);
+                    }
                 },
                 pause: function () {
                     lw.playing = false;

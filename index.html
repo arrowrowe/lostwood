@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html ng-app="lostwood">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>Lostwood</title>
+    <link rel="stylesheet" type="text/css" href="./vendor/bootstrap/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="./vendor/bootstrap/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" type="text/css" href="./vendor/fontawesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="./vendor/highlight/monokai_sublime.css"/>
+</head>
+<body>
+    <script type="text/javascript" src="./vendor/jquery.js"></script>
+    <script type="text/javascript" src="./vendor/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="./vendor/angular.js"></script>
+    <script type="text/javascript" src="./vendor/ui-bootstrap-tpls-0.11.2.js"></script>
+    <script type="text/javascript" src="./vendor/highlight/highlight.pack.js"></script>
+    <script type="text/javascript" src="./page/base/app.js"></script>
+    <script type="text/javascript" src="./page/home/app.js"></script>
+    <div class="container" ng-controller="HomeController">
+        <div ng-show="lw.alert.shown" class="alert alert-{{lw.alert.mode}}" role="alert" ng-click="lw.alert.close()">
+            <strong ng-bind="lw.alert.head"></strong>
+            <br/>
+            <span ng-bind="lw.alert.msg"></span>
+        </div>
+        <div ng-hide="lw.alert.shown">
+            <div class="col-lg-2">
+                <ul>
+                    <li ng-repeat="log in lw.alert.logs track by $index">
+                        <span ng-bind="log"></span>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-lg-2">
+                <ul>
+                    <li ng-repeat="property in lw.properties">
+                        <strong ng-bind="property.head"></strong>:
+                        <span ng-bind="property.amount"></span>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-lg-8">
+                <div ng-repeat="action in lw.actions" ng-show="action.visible">
+                    <div class="col-lg-12">
+                        <button type="button" class="btn btn-{{action.mode || 'default'}}" ng-bind="action.head" ng-click="lw.actionClick(action)" ng-disabled="action.disabled"></button>
+                        <span ng-repeat="(propertyName, propertyDelta) in action.fee">
+                            <span class="label label-{{(lw.properties[propertyName] && lw.properties[propertyName].amount >= propertyDelta.amount) ? 'primary' : 'danger'}}">
+                                <span ng-bind="(lw.properties[propertyName] || propertyDelta).head"></span>
+                                -<span ng-bind="propertyDelta.amount"></span>
+                            </span>
+                            &nbsp;
+                        </span>
+                        <span ng-repeat="(propertyName, propertyDelta) in action.pay">
+                            <span class="label label-success">
+                                <span ng-bind="(lw.properties[propertyName] || propertyDelta).head"></span>
+                                +<span ng-bind="propertyDelta.amount"></span>
+                            </span>
+                        </span>
+                        <span class="help-block" ng-bind="action.msg" ng-hide="action.percent"></span>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="progress" ng-show="action.percent">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="{{action.percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{action.percent}}%;">
+                                {{Math.floor(action.percent)}}%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
